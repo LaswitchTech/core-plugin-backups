@@ -17,8 +17,8 @@ If you have a question about `LaswitchTech/core-plugin-backups`, you can ask it 
 By contributing your code to the `LaswitchTech/core-plugin-backups` project, you agree to license your contribution under the [GNU GENERAL PUBLIC LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ## Resources
-- [LaswitchTech/core-plugin-backups Documentation](https://laswitchtech.com/en/projects/core/index)
-- [LaswitchTech/core-plugin-backups GitHub Repository](https://github.com/LaswitchTech/core-plugin-backups)
-- [LaswitchTech/core-plugin-backups Issue Tracker](https://github.com/LaswitchTech/core-plugin-backups/issues)
+- [Documentation](https://laswitchtech.com/en/projects/core/extensions/plugins/backups)
+- [GitHub Repository](https://github.com/LaswitchTech/core-plugin-backups)
+- [Issue Tracker](https://github.com/LaswitchTech/core-plugin-backups/issues)
 
 Thank you for contributing to `LaswitchTech/core-plugin-backups`!
