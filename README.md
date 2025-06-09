@@ -10,7 +10,7 @@
 ## Description
 **Author(s)**: [LaswitchTech](support@laswitchtech.com)
 
-Collections of plugins to manage your application.
+LaswitchTech - Core Framework extension. This plugin provides a backup manager for the LaswitchTech Core Framework, allowing users to create, manage, and restore backups of their application data.
 
 ## License
 This software is distributed under the [GPLv3](LICENSE) license.
@@ -22,10 +22,10 @@ Open your application's extension manager, search for `Backup Manager` and press
 Please disclose any vulnerabilities found responsibly – report security issues to the maintainers privately. See [SECURITY.md](SECURITY.md) for more information.
 
 ## Contributing
-Contributions to LaswitchTech\Core are welcome! You can review the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+Contributions to `LaswitchTech\core-plugin-backups` are welcome! You can review the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
 
 ## Wait, where is the documentation?
-Review the [Documentation](https://laswitchtech.com/en/projects/core/extensions/modules/extensions).
+Review the [Documentation](https://laswitchtech.com/en/projects/core/extensions/plugins/backups).
 
 ## What about the download button?
 The download button is available [here](https://github.com/LaswitchTech/core-plugin-backups/releases/latest/download/source.zip).
