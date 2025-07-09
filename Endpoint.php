@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Core Framework - BackupEndpoint
- *
- * @license    MIT (https://mit-license.org/)
- * @author     Louis Ouellet <louis@laswitchtech.com>
- */
-
 // Import additionnal class into the global namespace
 use \LaswitchTech\Core\Objects;
 use \LaswitchTech\Core\Abstracts\Endpoint;
@@ -33,7 +26,7 @@ class BackupsEndpoint extends Endpoint {
             case "/backup/init":
                 $this->Level = $this->Config->get('application', 'maintenance') ? 0 : 2;
                 break;
-            case "/backup/index":
+            case "/backup/fetchAll":
                 $this->Level = 1;
                 break;
             case "/backup/upload":
@@ -98,7 +91,7 @@ class BackupsEndpoint extends Endpoint {
                         $message['data']['record'] = [
                             "name" => str_replace('.zip','',$parameters['name']),
                             "path" => $path,
-                            "size" => $this->Model->Backups->readable($this->Helper->Backups->size($parameters['name'])),
+                            "size" => $this->Helper->Backups->readable($this->Helper->Backups->size($parameters['name'])),
                             "date" => date("Y-m-d H:i:s", filemtime($path)),
                             "hash" => md5_file($path),
                         ];
@@ -169,7 +162,7 @@ class BackupsEndpoint extends Endpoint {
                     $message["data"]["path"] = $path;
                     $message["data"]["file"] = $file;
                     $message["data"]["uuid"] = $uuid;
-                    $message["data"]["size"] = $this->Model->Backups->readable(filesize($path));
+                    $message["data"]["size"] = $this->Helper->Backups->readable(filesize($path));
                     $message["data"]["date"] = date("Y-m-d H:i:s", filemtime($path));
                     $message["data"]["hash"] = md5_file($path);
                     $message["data"]["message"] = "Backup completed successfully";
@@ -192,10 +185,10 @@ class BackupsEndpoint extends Endpoint {
     /**
      * Fetch all backups
      */
-    public function indexAction(): array
+    public function fetchAllAction(): array
     {
         // Set the default message
-        $message = ["status" => 200, "message" => "OK", "data" => $this->Model->Backups->list()];
+        $message = ["status" => 200, "message" => "OK", "data" => $this->Helper->Backups->fetchAll()];
 
         // Return the message
         return $message;
@@ -278,16 +271,16 @@ class BackupsEndpoint extends Endpoint {
                 if(file_exists($path . ".zip")){
 
                     // Unpack the archive
-                    if($this->Model->Backups->unpack($path . '.zip', $path)){
+                    if($this->Helper->Backups->unpack($path . '.zip', $path)){
 
                         // Copy the code and data to the root directory
-                        if($this->Model->Backups->copy($path . "/Code", $this->Config->root())){
+                        if($this->Helper->Backups->copy($path . "/Code", $this->Config->root())){
 
                             // Import the database from the backup directory
                             if($this->Model->Backups->import($path)){
 
                                 // Delete the temporary backup directory
-                                if($this->Model->Backups->delete($path)){
+                                if($this->Helper->Backups->delete($path)){
 
                                     // Set a success message
                                     $message["data"] = ["message" => "Backup restored successfully"];
