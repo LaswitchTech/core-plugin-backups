@@ -1,14 +1,8 @@
-<!--
-  Core Framework - View File
-
-  @license    MIT (https://mit-license.org/)
-  @author     Louis Ouellet <louis@laswitchtech.com>
--->
 <div class="col-12" id="layout"></div>
 <script>
     $(document).ready(function(){
         $.ajax({
-            url: '/endpoint.php/backups/index',
+            url: '/api/backups/fetchAll',
             type: 'GET',dataType: 'json',
             error: function(xhr, status, error) {
                 let color = 'info', icon = 'question-circle', title = builder.Locale.get(xhr.statusText), content = builder.Locale.get(xhr.responseText);
@@ -79,16 +73,14 @@
                             BackupModalUpload(dt);
                         },
                     },
-                    {
-                        className : 'btn-blue',
-                        init: function (dt, node){
-                            $(node).removeClass('btn-secondary');
-                        },
-                        text: '<i class="bi bi-gear me-2"></i>'+builder.Locale.get('Configure'),
-                        action:function(e, dt, node, config){
-                            // BackupModalUpload(dt);
-                        },
-                    },
+                    // {
+                    //     className : 'btn-blue',
+                    //     init: function (dt, node){
+                    //         $(node).removeClass('btn-secondary');
+                    //     },
+                    //     text: '<i class="bi bi-gear me-2"></i>'+builder.Locale.get('Configure'),
+                    //     action:function(e, dt, node, config){},
+                    // },
                     {
                         extend : 'selected',
                         className : 'btn-danger requires-selection d-none',

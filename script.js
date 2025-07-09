@@ -1,10 +1,3 @@
-//
-//   Core Framework - Script file
-//
-//   @license    MIT (https://mit-license.org/)
-//   @author     Louis Ouellet <louis@laswitchtech.com>
-//
-
 const BackupModalCreate = function(dt = null){
 
     // Create a modal
@@ -45,18 +38,14 @@ const BackupModalCreate = function(dt = null){
 
                         // CSRF Token
                         var data = {};
-                        data[CSRF_KEY] = CSRF_TOKEN;
 
                         // AJAX Request
                         $.ajax({
-                            url: '/endpoint.php/backups/init',
+                            url: '/api/backups/init',
+                            headers: {'X-CSRF-Authorization': CSRF_KEY},
                             type: 'POST',dataType: 'json',
                             data: data,
                             success: function(response) {
-
-                                // Update the CSRF
-                                CSRF_KEY = response.CSRF.key;
-                                CSRF_TOKEN = response.CSRF.token;
 
                                 // Add the item from the list
                                 if(dt){
@@ -159,7 +148,7 @@ const BackupModalDelete = function(backups, dt = null){
 
                             // AJAX Request
                             $.ajax({
-                                url: '/endpoint.php/backups/delete?uuid=' + backup.name,
+                                url: '/api/backups/delete?uuid=' + backup.name,
                                 type: 'GET',dataType: 'json',
                                 success: function(response) {
 
@@ -243,7 +232,7 @@ const BackupModalRestore = function(uuid){
 
                         // AJAX Request
                         $.ajax({
-                            url: '/endpoint.php/backups/restore?uuid=' + uuid,
+                            url: '/api/backups/restore?uuid=' + uuid,
                             type: 'GET',dataType: 'json',
                             success: function(response) {
 
@@ -326,15 +315,11 @@ const BackupModalUpload = function(dt = null){
 
                                     // AJAX Request
                                     $.ajax({
-                                        url: '/endpoint.php/backups/upload',
+                                        url: '/api/backups/upload',
                                         headers: {'X-CSRF-Authorization': CSRF_KEY},
                                         type: 'POST',dataType: 'json',
                                         data: file,
                                         success: function(response) {
-
-                                            // Update CSRF Token
-                                            CSRF_KEY = response.CSRF.key;
-                                            CSRF_TOKEN = response.CSRF.token;
 
                                             // Check if the list is an object
                                             if(dt){
@@ -360,20 +345,6 @@ const BackupModalUpload = function(dt = null){
                     },
                 },
                 function(form,component){
-
-                    // csrf
-                    form.add(
-                        {
-                            name: CSRF_KEY,
-                            label: 'csrf',
-                            icon: 'hash',
-                            type: 'hidden',
-                            value: CSRF_TOKEN,
-                        },
-                        function(input,form){
-                            input.css('display','none');
-                        },
-                    );
 
                     // file
                     form.add(
