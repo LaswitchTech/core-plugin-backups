@@ -43,10 +43,7 @@ class BackupsCommand extends Command {
         // Set the backup directory
         $path = $this->Config->root() . DIRECTORY_SEPARATOR . 'backup';
 
-        // Output all backups
-        $this->Output->print("Found backups:");
-
-        $archives = $this->Model->Backups->fetchAll();
+        $archives = $this->Helper->Backups->fetchAll();
 
         // List all backups
         if(empty($archives)){
@@ -55,8 +52,11 @@ class BackupsCommand extends Command {
             $this->Output->print("No backups found.");
         } else {
 
+            // Output all backups
+            $this->Output->print("Found backups:");
+
             // Output the list of backups
-            foreach($this->Model->Backups->list() as $archive){
+            foreach($archives as $archive){
 
                 // Output the archive name
                 $this->Output->print("[".$archive['date']."] " . $archive['name'] . " (" . $archive['size'] . " bytes)");
