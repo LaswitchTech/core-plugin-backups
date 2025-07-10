@@ -46,7 +46,7 @@ class BackupsCommand extends Command {
         // Output all backups
         $this->Output->print("Found backups:");
 
-        $archives = $this->Model->Backups->list();
+        $archives = $this->Model->Backups->fetchAll();
 
         // List all backups
         if(empty($archives)){
@@ -76,16 +76,16 @@ class BackupsCommand extends Command {
             $path = $this->Config->root() . DIRECTORY_SEPARATOR . 'backup'. DIRECTORY_SEPARATOR . $this->Request->getArguments(3);
 
             // Unpack the archive
-            if($this->Model->Backups->unpack($path . '.zip', $path)){
+            if($this->Helper->Backups->unpack($path . '.zip', $path)){
 
                 // Copy the code and data to the root directory
-                if($this->Model->Backups->copy($path . "/Code", $this->Config->root())){
+                if($this->Helper->Backups->copy($path . "/Code", $this->Config->root())){
 
                     // Import the database from the backup directory
                     if($this->Model->Backups->import($path)){
 
                         // Delete the temporary backup directory
-                        if($this->Model->Backups->delete($path)){
+                        if($this->Helper->Backups->delete($path)){
 
                             // Output a success message
                             $this->Output->print("Restore completed successfully");
