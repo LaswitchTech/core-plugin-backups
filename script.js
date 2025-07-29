@@ -72,7 +72,7 @@ const BackupModalCreate = function(dt = null){
             const componentModal = component;
 
             // Style the modal
-            component.header.addClass('text-bg-success');
+            component.addClass('modal-success');
             component.footer.submit.addClass('btn-success').removeClass('btn-link').attr({
                 "style": "border-bottom-right-radius: var(--bs-modal-inner-border-radius) !important;border-bottom-left-radius: var(--bs-modal-inner-border-radius) !important;",
             }).text(builder.Locale.get('Start'));
@@ -181,7 +181,7 @@ const BackupModalDelete = function(backups, dt = null){
             const componentModal = component;
 
             // Style the modal
-            component.header.addClass('text-bg-danger');
+            component.addClass('modal-danger');
             component.footer.submit.addClass('btn-danger').removeClass('btn-link').attr({
                 "style": "border-bottom-right-radius: var(--bs-modal-inner-border-radius) !important;border-bottom-left-radius: var(--bs-modal-inner-border-radius) !important;",
             }).text(builder.Locale.get('Delete'));
@@ -253,7 +253,7 @@ const BackupModalRestore = function(uuid){
             const componentModal = component;
 
             // Style the modal
-            component.header.addClass('text-bg-info');
+            component.addClass('modal-info');
             component.footer.submit.addClass('btn-info').removeClass('btn-link').attr({
                 "style": "border-bottom-right-radius: var(--bs-modal-inner-border-radius) !important;border-bottom-left-radius: var(--bs-modal-inner-border-radius) !important;",
             }).text(builder.Locale.get('Restore'));
@@ -286,7 +286,7 @@ const BackupModalUpload = function(dt = null){
             const componentModal = component;
 
             // Style the modal
-            component.header.addClass('text-bg-info');
+            component.addClass('modal-info');
             component.footer.submit.addClass('btn-info').removeClass('btn-link').attr({
                 "style": "border-bottom-right-radius: var(--bs-modal-inner-border-radius) !important;border-bottom-left-radius: var(--bs-modal-inner-border-radius) !important;",
             }).text(builder.Locale.get('Upload'));
