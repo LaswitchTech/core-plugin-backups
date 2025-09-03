@@ -188,7 +188,7 @@ class BackupsEndpoint extends Endpoint {
     public function fetchAllAction(): array
     {
         // Set the default message
-        $message = ["status" => 200, "message" => "OK", "data" => $this->Helper->Backups->fetchAll()];
+        $message = ["status" => 200, "message" => "OK", "data" => ["records" => $this->Helper->Backups->fetchAll()]];
 
         // Return the message
         return $message;

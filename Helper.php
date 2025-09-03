@@ -214,7 +214,7 @@ class BackupsHelper extends Helper {
         }
 
         // Loop through the files in the backup directory
-        foreach(array_diff(scandir($path), array('..', '.')) as $file){
+        foreach(array_diff(scandir($path), array('..', '.','.DS_Store')) as $file){
 
             // Check if the file is a zip file
             if (pathinfo($file, PATHINFO_EXTENSION) === 'zip') {

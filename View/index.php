@@ -14,6 +14,7 @@
                 builder.Component("alert","#layout",{icon:icon,color:color,title:title},function(alert,component){component.content.html('<pre class="m-0 p-2">'+content+'</pre>');});
             },
             success: function(response) {
+                console.log(response);
 
                 // Set Actions
                 var actions = {
@@ -151,7 +152,7 @@
                         component.table._component.table.addClass('z-2');
 
                         // Add Records to Layout
-                        for(const [key, record] of Object.entries(response)){
+                        for(const [key, record] of Object.entries(response.records)){
                             layout.add(record);
                         }
                     },
