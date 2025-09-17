@@ -1,163 +1,130 @@
-<div class="col-12" id="layout"></div>
+<article id="layout"></article>
 <script>
     $(document).ready(function(){
-        $.ajax({
-            url: '/api/backups/fetchAll',
-            type: 'GET',dataType: 'json',
-            error: function(xhr, status, error) {
-                let color = 'info', icon = 'question-circle', title = builder.Locale.get(xhr.statusText), content = builder.Locale.get(xhr.responseText);
-                switch(xhr.status){
-                    case 403: color = 'danger'; icon = 'person'; break;
-                    case 404: color = 'warning'; icon = 'question-diamond'; break;
-                    case 500: color = 'danger'; icon = 'bug'; break;
-                }
-                builder.Component("alert","#layout",{icon:icon,color:color,title:title},function(alert,component){component.content.html('<pre class="m-0 p-2">'+content+'</pre>');});
+        builder.Layout('index',"#layout",{
+            endpoint: '/backups/fetchAll',
+            conditions: null,
+            primary: 'name',
+            actions: {
+                download:{
+                    label: builder.Locale.get('Download'),
+                    class:{
+                        button: 'text-bg-light',
+                    },
+                    icon:'download',
+                    action:function(event, table, dt, node, row, data){
+                        window.location.href = '/plugin/backups/download?name='+data.name;
+                    }
+                },
+                restore:{
+                    label: builder.Locale.get('Restore'),
+                    class:{
+                        button: 'text-bg-info',
+                    },
+                    icon:'arrow-counterclockwise',
+                    action:function(event, table, dt, node, row, data){
+                        BackupModalRestore(data.name);
+                    }
+                },
+                delete:{
+                    label: builder.Locale.get('Delete'),
+                    class:{
+                        button: 'text-bg-danger',
+                    },
+                    icon:'trash',
+                    action:function(event, table, dt, node, row, data){
+                        var uuids = [];
+                        uuids.push(data);
+                        BackupModalDelete(uuids, dt);
+                    }
+                },
             },
-            success: function(response) {
-                console.log(response);
-
-                // Set Actions
-                var actions = {
-                    download:{
-                        label: builder.Locale.get('Download'),
-                        class:{
-                            button: 'text-bg-light',
-                        },
-                        icon:'download',
-                        action:function(event, table, dt, node, row, data){
-                            window.location.href = '/plugin/backups/download?name='+data.name;
-                        }
+            buttons: [
+                {
+                    className : 'btn-success',
+                    init: function (dt, node){
+                        $(node).removeClass('btn-secondary');
                     },
-                    restore:{
-                        label: builder.Locale.get('Restore'),
-                        class:{
-                            button: 'text-bg-info',
-                        },
-                        icon:'arrow-counterclockwise',
-                        action:function(event, table, dt, node, row, data){
-                            BackupModalRestore(data.name);
-                        }
+                    text: '<i class="bi bi-plus-lg"></i>',
+                    action:function(e, dt, node, config){
+                        BackupModalCreate(dt);
                     },
-                    delete:{
-                        label: builder.Locale.get('Delete'),
-                        class:{
-                            button: 'text-bg-danger',
-                        },
-                        icon:'trash',
-                        action:function(event, table, dt, node, row, data){
-                            var uuids = [];
-                            uuids.push(data);
-                            BackupModalDelete(uuids, dt);
-                        }
+                },
+                {
+                    className : 'btn-light',
+                    init: function (dt, node){
+                        $(node).removeClass('btn-secondary');
                     },
-                };
-
-                // Set Buttons
-                var buttons = [
-                    {
-                        className : 'btn-success',
-                        init: function (dt, node){
-                            $(node).removeClass('btn-secondary');
-                        },
-                        text: '<i class="bi bi-plus-lg me-2"></i>'+builder.Locale.get('Create'),
-                        action:function(e, dt, node, config){
-                            BackupModalCreate(dt);
-                        },
+                    text: '<i class="bi bi-upload"></i>',
+                    action:function(e, dt, node, config){
+                        BackupModalUpload(dt);
                     },
-                    {
-                        className : 'btn-light',
-                        init: function (dt, node){
-                            $(node).removeClass('btn-secondary');
-                        },
-                        text: '<i class="bi bi-upload me-2"></i>'+builder.Locale.get('Upload'),
-                        action:function(e, dt, node, config){
-                            BackupModalUpload(dt);
-                        },
+                },
+                {
+                    extend : 'selected',
+                    className : 'btn-danger requires-selection d-none',
+                    init: function (dt, node){
+                        $(node).removeClass('btn-secondary');
                     },
-                    // {
-                    //     className : 'btn-blue',
-                    //     init: function (dt, node){
-                    //         $(node).removeClass('btn-secondary');
-                    //     },
-                    //     text: '<i class="bi bi-gear me-2"></i>'+builder.Locale.get('Configure'),
-                    //     action:function(e, dt, node, config){},
-                    // },
-                    {
-                        extend : 'selected',
-                        className : 'btn-danger requires-selection d-none',
-                        init: function (dt, node){
-                            $(node).removeClass('btn-secondary');
-                        },
-                        text: '<i class="bi bi-trash me-2"></i>'+builder.Locale.get('Delete'),
-                        action:function(e, dt, node, config){
-                            var uuids = dt.rows({ selected: true }).data().toArray();
-                            BackupModalDelete(uuids, dt);
-                        },
+                    text: '<i class="bi bi-trash"></i>',
+                    action:function(e, dt, node, config){
+                        var uuids = dt.rows({ selected: true }).data().toArray();
+                        BackupModalDelete(uuids, dt);
                     },
-                ];
-
-                // Layout
-                builder.Layout(
-                    "list",
-                    "#layout",
-                    {
-                        title: builder.Locale.get('Backups'),
-                        icon: 'file-zip',
-                        advancedSearch:true,
-                        exportTools:true,
-                        columnsVisibility:true,
-                        selectTools:true,
-                        showButtonsLabel: false,
-                        actions:actions,
-                        buttons:buttons,
-                        columnDefs:[
-                            { target: 0, visible: true, title: builder.Locale.get('Name'), name: 'name', data: 'name', render: function(data, type, row) {
-                                var object = $(document.createElement('span'))
-                                    .addClass('my-2')
-                                    .text(data)
-                                return object.prop('outerHTML');
-                            }},
-                            { target: 1, visible: false, title: builder.Locale.get('Path'), name: 'path', data: 'path', render: function(data, type, row) {
-                                var object = $(document.createElement('span'))
-                                    .addClass('my-2')
-                                    .text(data)
-                                return object.prop('outerHTML');
-                            }},
-                            { target: 2, visible: true, title: builder.Locale.get('Size'), name: 'size', data: 'size', render: function(data, type, row) {
-                                var object = $(document.createElement('span'))
-                                    .addClass('my-2')
-                                    .text(data)
-                                return object.prop('outerHTML');
-                            }},
-                            { target: 3, visible: true, title: builder.Locale.get('Date'), name: 'date', data: 'date', render: function(data, type, row) {
-                                var object = $(document.createElement('span'))
-                                    .addClass('my-2')
-                                    .text(data)
-                                return object.prop('outerHTML');
-                            }},
-                            { target: 4, visible: false, title: builder.Locale.get('Hash'), name: 'hash', data: 'hash', render: function(data, type, row) {
-                                var object = $(document.createElement('span'))
-                                    .addClass('my-2')
-                                    .text(data)
-                                return object.prop('outerHTML');
-                            }},
-                        ],
-                    },
-                    function(layout, component){
-
-                        // Set container
-                        var container = component.card._component.body;
-
-                        // Lower the z-index of the table
-                        component.table._component.table.addClass('z-2');
-
-                        // Add Records to Layout
-                        for(const [key, record] of Object.entries(response.records)){
-                            layout.add(record);
-                        }
-                    },
-                );
-            },
+                },
+            ],
+            columns: [
+                {
+                    targets: 0,
+                    visible: true,
+                    className: 'all',
+                    responsivePriority: 1,
+                    title: builder.Locale.get('Name'),
+                    name: 'name',
+                    data: 'name',
+                    defaultContent: '',
+                },
+                {
+                    targets: 1,
+                    visible: false,
+                    className: 'min-md',
+                    responsivePriority: 100,
+                    title: builder.Locale.get('Path'),
+                    name: 'path',
+                    data: 'path',
+                    defaultContent: '',
+                },
+                {
+                    targets: 2,
+                    visible: true,
+                    className: 'min-md',
+                    responsivePriority: 10,
+                    title: builder.Locale.get('Size'),
+                    name: 'size',
+                    data: 'size',
+                    defaultContent: '',
+                },
+                {
+                    targets: 3,
+                    visible: true,
+                    className: 'min-md',
+                    responsivePriority: 20,
+                    title: builder.Locale.get('Date'),
+                    name: 'date',
+                    data: 'date',
+                    defaultContent: '',
+                },
+                {
+                    targets: 4,
+                    visible: false,
+                    className: 'min-md',
+                    responsivePriority: 200,
+                    title: builder.Locale.get('Hash'),
+                    name: 'hash',
+                    data: 'hash',
+                    defaultContent: '',
+                },
+            ],
         });
     });
 </script>
