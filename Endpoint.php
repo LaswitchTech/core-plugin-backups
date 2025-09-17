@@ -131,19 +131,11 @@ class BackupsEndpoint extends Endpoint {
         // Set the default message
         $message = ["status" => 200, "message" => "OK", "data" => []];
 
-        // Check the request method
-        if($this->Request->getMethod() == "POST"){
-            $message["data"]["CSRF"] = [
-                "token" => $CSRF->token(),
-                "key" => $CSRF->key()
-            ];
-        }
-
         // Check if the status is still OK
         if($message['status'] == 200){
 
             // Check the request method
-            if($this->Request->getMethod() == "POST"){
+            if($this->Request->getMethod() == "GET"){
 
                 // Start the backup process
                 $path = $this->Model->Backups->init();
