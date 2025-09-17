@@ -36,31 +36,22 @@ const BackupModalCreate = function(dt = null){
                         // Show the spinner
                         spinner.removeClass('d-none');
 
-                        // CSRF Token
-                        var data = {};
-
                         // AJAX Request
-                        $.ajax({
-                            url: '/api/backups/init',
-                            headers: {'X-CSRF-Authorization': CSRF_KEY},
-                            type: 'POST',dataType: 'json',
-                            data: data,
-                            success: function(response) {
+                        API.endpoint('/backups/init').execute(function(response){
 
-                                // Add the item from the list
-                                if(dt){
-                                    dt.row.add({
-                                        "name": response.name,
-                                        "path": response.path,
-                                        "size": response.size,
-                                        "date": response.date,
-                                        "hash": response.hash,
-                                    }).draw();
-                                }
-
-                                // Hide the modal
-                                modal.hide();
+                            // Add the item from the list
+                            if(dt){
+                                dt.row.add({
+                                    "name": response.name,
+                                    "path": response.path,
+                                    "size": response.size,
+                                    "date": response.date,
+                                    "hash": response.hash,
+                                }).draw();
                             }
+
+                            // Hide the modal
+                            modal.hide();
                         });
                     }, 300);
                 },
@@ -147,27 +138,23 @@ const BackupModalDelete = function(backups, dt = null){
                         backups.forEach(function(backup){
 
                             // AJAX Request
-                            $.ajax({
-                                url: '/api/backups/delete?uuid=' + backup.name,
-                                type: 'GET',dataType: 'json',
-                                success: function(response) {
+                            API.endpoint('/backups/delete?uuid=' + backup.name).execute(function(response){
 
-                                    // Remove the item from the list
-                                    if(dt){
-                                        dt.row(function(idx, data, node) {
-                                            return data.name == backup.name;
-                                        }).remove().draw();
-                                    }
+                                // Remove the item from the list
+                                if(dt){
+                                    dt.row(function(idx, data, node) {
+                                        return data.name == backup.name;
+                                    }).remove().draw();
+                                }
 
-                                    // Increment the counter
-                                    counter++;
+                                // Increment the counter
+                                counter++;
 
-                                    // Check if all the items have been deleted
-                                    if(counter == total){
+                                // Check if all the items have been deleted
+                                if(counter == total){
 
-                                        // Hide the modal
-                                        modal.hide();
-                                    }
+                                    // Hide the modal
+                                    modal.hide();
                                 }
                             });
                         });
@@ -231,17 +218,13 @@ const BackupModalRestore = function(uuid){
                         spinner.removeClass('d-none');
 
                         // AJAX Request
-                        $.ajax({
-                            url: '/api/backups/restore?uuid=' + uuid,
-                            type: 'GET',dataType: 'json',
-                            success: function(response) {
+                        API.endpoint('/backups/restore?uuid=' + uuid).execute(function(response){
 
-                                // Hide the modal
-                                modal.hide();
+                            // Hide the modal
+                            modal.hide();
 
-                                // Refresh the page
-                                window.location.reload();
-                            }
+                            // Refresh the page
+                            window.location.reload();
                         });
                     }, 300);
                 },
@@ -314,28 +297,22 @@ const BackupModalUpload = function(dt = null){
                                 for(const [id, file] of Object.entries(fileData)){
 
                                     // AJAX Request
-                                    $.ajax({
-                                        url: '/api/backups/upload',
-                                        headers: {'X-CSRF-Authorization': CSRF_KEY},
-                                        type: 'POST',dataType: 'json',
-                                        data: file,
-                                        success: function(response) {
+                                    API.endpoint('/backups/upload').data(file).execute(function(response){
 
-                                            // Check if the list is an object
-                                            if(dt){
+                                        // Check if the list is an object
+                                        if(dt){
 
-                                                // Add the followup to the datatable
-                                                dt.row.add(response.record).draw();
-                                            }
-
-                                            // Check if a callback is defined
-                                            if(typeof callback === "function"){
-                                                callback(response.record);
-                                            }
-
-                                            // Close the modal
-                                            modal.hide();
+                                            // Add the followup to the datatable
+                                            dt.row.add(response.record).draw();
                                         }
+
+                                        // Check if a callback is defined
+                                        if(typeof callback === "function"){
+                                            callback(response.record);
+                                        }
+
+                                        // Close the modal
+                                        modal.hide();
                                     });
                                 }
                             }).catch(error => {
