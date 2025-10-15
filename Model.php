@@ -161,7 +161,7 @@ class BackupsModel extends Model {
 
         try {
             // Scan for all .map files in the dump's Definition folder
-            $definitions = array_diff(scandir($definitionPath), ['.', '..']);
+            $definitions = array_diff(scandir($definitionPath), ['.', '..', '.DS_Store']);
 
             foreach ($definitions as $defFile) {
                 // Only process .map files
